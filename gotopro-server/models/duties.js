@@ -31,11 +31,11 @@ const dutiesTable = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        tasktype: {
+        dutytype: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        taskdaily: {
+        dutydaily: {
             type: DataTypes.STRING,
             allowNull: false,
         },
