@@ -1,29 +1,44 @@
 const express = require('express');
-const duty = require('./route/duty');
-const users = require('./route/users')
 const cors = require('cors');
-const db = require("./models");
 
-const app = express();
+const bodyParser = require('body-parser');
+
+//DB CONNECT HERE
+const InitiateMongoServer = require("./config/db");
+InitiateMongoServer();
+
+//ROUTE
+const duty = require('./route/duty');
+const users = require('./route/users');
+const history = require('./route/history');
 
 //IP CONFIG
-const IPCONFIG = process.env.IP || '192.168.1.7';
+const IPCONFIG = process.env.IP || '192.168.1.6';
 const PORT = process.env.PORT || 8000;
 
 
-app.use(cors()); // CROSS-Origin Resource Sharing Enable
+var corsOptions = {
+    origin: `http://${IPCONFIG}:${PORT}`
+};
+
+const app = express();
+
+app.use(cors(corsOptions)); // CROSS-Origin Resource Sharing Enable
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // JSON type
 
 app.use(duty);
+app.use(history);
 app.use(users);
 
-// app.get('/', function (req, res) {
-//     res.send('Hello World');
-//  });
+
+app.get("/", (req, res) => {
+    res.json({ message: "API Working" });
+  });
 
 (async () => {
     try{
-        await db.sequelize.sync();
         app.listen(PORT, IPCONFIG, () => {console.log(`Server listening: 🏳️‍🌈 🏳️‍🌈 🏳️‍🌈 http://${IPCONFIG}:${PORT} 🏃‍♂️ 🏃‍♂️ 🏃‍♂️`)});
     }catch(err){
         // Catch Err

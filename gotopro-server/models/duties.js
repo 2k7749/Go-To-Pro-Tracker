@@ -1,53 +1,67 @@
-const sequelize = require("sequelize");
+const mongoose = require('mongoose');
 
-const dutiesTable = (sequelize, DataTypes) => {
-    const Duties = sequelize.define("Duties", {
-        dutyid: {
-            primaryKey: true,
-            autoIncrement: true,
-            type: DataTypes.INTEGER,
-        },
-        dutyname: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        description: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        color: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        currentstreak: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        maxstreak: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        totaltime: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        dutytype: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        dutydaily: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-    });
+const DutySchema = mongoose.Schema({
+    dutyName: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    color: {
+        type: String,
+        required: true
+    },
+    currentStreak: {
+        type: Number,
+        required: true
+    },
+    maxStreak: {
+        type: Number,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true
+    },
+    goal: {
+        type: Number,
+        required: true
+    },
+    //TYPE TIME ADD TO
+    hours: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    minutes: {
+        type: Number,
+        default: 0,
+        required: true
+    },
+    status: {
+        type: Boolean,
+        required: true
+    },
+    creationDate: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
+    history: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'histories'
+    }]
+},{
+    toJSON: {
+        transform(doc, ret){
+            delete ret.__v,
+            delete ret.createdAt,
+            delete ret.updatedAt
+        }
+    },
+    timestamps: true
+});
 
-    Duties.associate = (models) => {
-        Duties.belongsTo(models.Users, {
-            foreignKey: { allowNull: false },
-            onDelete: 'CASCADE',
-        });
-    };
-    return Duties;
-};
-
-module.exports = dutiesTable;
+module.exports = mongoose.model("duties", DutySchema);

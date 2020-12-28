@@ -1,27 +1,27 @@
 const mongoose = require('mongoose');
 
-const HistorySchema = mongoose.Schema({
-    dutyId: {
+const UserSchema = mongoose.Schema({
+    fullname: {
         type: String,
         required: true
     },
-    dateString: {
+    username: {
         type: String,
         required: true
     },
-    timestamps: {
-        type: Date,
-        default: Date.now(),
+    password: {
+        type: String,
         required: true
     },
-    selected: {
-        type: Boolean,
-        required: true
-    },
-    selectedColor: {
+    email: {
         type: String,
         required: true
     }
+    // ,
+    // createdAt: {
+    //     type: Date,
+    //     default: Date.now()
+    // }
 },{
     toJSON: {
         transform(doc, ret){
@@ -33,4 +33,4 @@ const HistorySchema = mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model("history", HistorySchema);
+module.exports = mongoose.model("users", UserSchema);

@@ -1,10 +1,11 @@
-let duties = require('../mockdb/duties');
+//MODEL
+const Duties = require("./../models/Duties");
 
 //Get Duties
-const getDuties = (req, res) => {
+const getDuties = async (req, res) => {
     try{
-        res.status(200);
-        res.send(duties);
+        const fetchDuties = await Duties.find( {} );
+        res.status(200).send(fetchDuties);
     }catch(err){
         res.status(500);
         console.log(err);
@@ -12,12 +13,40 @@ const getDuties = (req, res) => {
 }
 
 //POST Duty
-const postDuty = (req, res) => {
+const postDuty = async (req, res) => {
     try{
+        const {
+            dutyName,
+            description,
+            color,
+            type,
+            goal,
+            hours,
+            minutes,
+            creationDate,
+            status,
+            currentStreak,
+            maxStreak,
+            history
+        } = req.body;
         const newDuty = req.body; //body parse
-        duties.push(newDuty);
-        res.status(201);
-        res.send(newDuty);
+
+        duty = new Duties({
+            dutyName,
+            description,
+            color,
+            type,
+            goal,
+            hours,
+            minutes,
+            creationDate,
+            status,
+            currentStreak,
+            maxStreak,
+            history
+        });
+        await duty.save();
+        res.status(201).send(newDuty);
     }catch(err){
         res.status(500);
         console.log(err);
@@ -25,12 +54,11 @@ const postDuty = (req, res) => {
 }
 
 //DELETE Duty
-const deleteDuty = (req, res) => {
+const deleteDuty = async (req, res) => {
     try{
         const deleteDutyId = req.params.id;
-        duties = duties.filter((duty) => duty.dutyId !== deleteDutyId);
-        res.status(201);
-        res.send(deleteDutyId);
+        await Duties.findByIdAndRemove(deleteDutyId);
+        res.status(201).send({ message: "Xoá thành công" });
     }catch(err){
         res.status(500);
         console.log(err);
@@ -38,14 +66,25 @@ const deleteDuty = (req, res) => {
 }
 
 //Toggle Comp
-const toggleDutyDone = (req, res) => {
+const toggleDutyDone = async (req, res) => {
     try{
         const toggleDutyId = req.params.id;
         const dutyStatus = req.query.isComplete;
-        const matchingDuty = duties.find((duty) => duty.dutyId === toggleDutyId);
-        matchingDuty.status = dutyStatus;
-        res.status(201);
-        res.send(duties);
+
+        // const matchingDuty = await Duties.findOne({ _id: toggleDutyId })
+        // matchingDuty.status = dutyStatus;
+
+        const newUpdateId = { _id: toggleDutyId };
+        const newDocUpdate = {
+            $set: {
+              status: dutyStatus,
+            },
+          };
+        const options = { upsert: true };
+
+        await Duties.update( newUpdateId, newDocUpdate, options );
+
+        res.status(201).send({ message: "Cập nhật trạng thái thành công" });
     }catch(err){
         res.status(500);
         console.log(err);
