@@ -12,6 +12,7 @@ import {
 import { Picker } from '@react-native-community/picker';
 import CallApi from '../Utils/CallApi';
 import { v4 as uuidv4 } from 'uuid';
+import 'react-native-get-random-values';
 
 const dutyColors = [
   { colorCode: '#f9c74f', displayName: 'Yellow' },
@@ -93,7 +94,7 @@ const AddDutyScreen = ({ route, navigation }) => {
       Alert.alert('Vui lòng điền đúng số');
     }else{
       const newDuty = {
-        dutyId: randomId,
+       // dutyId: randomId,
         dutyName,
         description: dutyDescription,
         color: dutyColor,

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 const DutyCount = ({ duty, toggleDutyDoneCallback }) => {
 
-    const id = duty.dutyId;
+    const id = duty._id;
     let status = duty.status;
     const borderColor = {
         borderColor: duty.color,

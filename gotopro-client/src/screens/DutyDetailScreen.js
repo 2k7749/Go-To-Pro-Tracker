@@ -13,7 +13,7 @@ import DutyCalendar from './../components/DutyCalendar';
 
 const DutyDetailScreen = ({ navigation, route }) => {
   const { duty } = route.params;
-  const id = duty.dutyId;
+  const id = duty._id;
   const dutyColorBackground = {
     backgroundColor: duty.color,
   };
@@ -128,7 +128,7 @@ const DutyDetailScreen = ({ navigation, route }) => {
           </View>
 
           <View style={ styles.actionBox }>
-            <Text style={ styles.deleteBtnText } onPress={ () => handleDeleteDuty(id) }>
+            <Text style={ styles.deleteBtnText } onPress={ () => handleEditDuty(id) }>
               {' '}
               Edit{' '}
             </Text>

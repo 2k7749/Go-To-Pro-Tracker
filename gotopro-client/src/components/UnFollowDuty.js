@@ -10,7 +10,7 @@ import {
 
 const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
 
-    const id = duty.dutyId;
+    const id = duty._id;
     const [ status, setStatus ] = useState( duty.status );
     const [ time, setTime ] = useState({
         hours: 0,

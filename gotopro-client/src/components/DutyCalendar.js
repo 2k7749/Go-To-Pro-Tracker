@@ -24,7 +24,7 @@ const DutyCalendar = ({ duty }) => {
     return (
         <View>
             <Calendar
-                current={Date()}
+                current={ Date() }
                 minDate={ '2020-01-01' }
                 maxDate={ '2020-12-31' }
                 monthFormat={ 'MMM yyyy' }

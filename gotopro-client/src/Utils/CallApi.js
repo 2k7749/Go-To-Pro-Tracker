@@ -1,4 +1,4 @@
-const BASE_URL = 'http://192.168.1.7:8000';
+const BASE_URL = 'http://192.168.1.6:8000';
 
 const CallApi = {
     getAllDuties: async () => {
@@ -12,6 +12,7 @@ const CallApi = {
         }
     },
     postDuty: async (body) => {
+        //console.log(JSON.stringify(body));
         return fetchMethodData( '/duties', {
             method: 'POST',
             headers: {
@@ -31,6 +32,7 @@ const CallApi = {
         });
     },
     updateDutyStatus: async ( dutyId, status ) => {
+        console.log(`${dutyId} : ${status}`);
         return fetchMethodData( `/duties/${dutyId}?isComplete=${status}`, {
             method: 'PUT',
             header: {

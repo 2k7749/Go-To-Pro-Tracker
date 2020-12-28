@@ -7,7 +7,7 @@ import DutyCount from './../components/DutyCount';
 
 const screenWidth = Dimensions.get('window').width;
 const DutyBox = ({ duty, reqRefreshCallback }) => {
-    const id = duty.dutyId;
+    const id = duty._id;
     const { status } = duty;
     const boxColor = {
         backgroundColor: duty.color,
