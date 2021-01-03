@@ -1,33 +1,37 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const DutyType = ({ description, type }) => {
+const DutyType = ({ description, type, title }) => {
     const handleIcon = () => {
         if(type === 'time'){
             return (
                 <Image 
-                    source={ require('./../assets/hourglass.png') }
+                    source={ require('./../assets/hourglass.gif') }
                     style={ styles.imageBtn }
                 />
             );
         } else if ( type === 'count' ){
-            return <Text style={ styles.plusOne }> +1 </Text>
+            return <Image 
+            source={ require('./../assets/counter.gif') }
+            style={ styles.imageBtn }
+        />
         } else if ( type === 'check' ){
             return (
                 <Image
-                    source={ require('./../assets/greentick.png') }
+                    source={ require('./../assets/tickcheck.gif') }
                     style={ styles.imageBtn }
                 />
             );
         }
     };
     return (
-        <View style={ styles.typeBox }>
+        
+        <View style={(type === 'time') ? styles.typeBoxTime : (type === 'count') ? styles.typeBoxCount : styles.typeBoxCheck }>
             <View style={ styles.iconBackground }>
                 {handleIcon()}
             </View>
             <View>
-                <Text style={ styles.typeText }> { type } </Text>
+                <Text style={ styles.typeText }> { title } </Text>
                 <Text style={ styles.descriptionText }> { description } </Text>
             </View>
         </View>
@@ -40,15 +44,28 @@ const styles = StyleSheet.create({
         height: 40,
         alignSelf: 'center',
     },
-    plusOne: {
-        color: 'slategrey',
-        fontSize: 28,
-        fontWeight: 'bold',
-        alignSelf: 'center',
-    },
-    typeBox: {
+    typeBoxTime: {
+        flex: 1,
         flexDirection: 'row',
-        backgroundColor: '#1A535C',
+        backgroundColor: '#FFCC00',
+        borderRadius: 10,
+        padding: 10,
+        margin: 10,
+        alignItems: 'center',
+    },
+    typeBoxCount: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: '#FE0000',
+        borderRadius: 10,
+        padding: 10,
+        margin: 10,
+        alignItems: 'center',
+    },
+    typeBoxCheck: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: '#4285F4',
         borderRadius: 10,
         padding: 10,
         margin: 10,

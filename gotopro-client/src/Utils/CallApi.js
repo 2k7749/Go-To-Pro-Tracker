@@ -1,4 +1,4 @@
-const BASE_URL = 'http://192.168.1.6:8000';
+const BASE_URL = 'http://192.168.1.9:8000';
 
 const CallApi = {
     getAllDuties: async () => {
@@ -41,6 +41,60 @@ const CallApi = {
             },
         });
     },
+
+    updateDutyHistory: async ( body ) => {
+        return fetchMethodData( '/history/add', {
+                method: 'POST',
+                headers: {
+                    'accept':'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+        });
+    },
+    
+    getHistoryDuty: async ( dutyId ) => {
+        return fetchMethodData( `/history/detail/${dutyId}`, {
+            method: 'GET',
+            header: {
+                'accept':'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+    },
+
+    authUser: async ( body ) => {
+        return fetchMethodData( '/user/login', {
+            method: 'POST',
+            headers: {
+                'accept':'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+        }); 
+    },
+
+    signupUser: async ( body ) => {
+        return fetchMethodData( '/user/signup', {
+            method: 'POST',
+            headers: {
+                'accept':'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+        }); 
+    },
+
+    authUserMe: async ( token ) => {
+        return fetchMethodData( '/user/me', {
+            method: 'GET',
+            headers: {
+                'accept':'application/json',
+                'Content-Type': 'application/json',
+                'x-access-token': token,
+            }
+        }); 
+    }
 
 };
 

@@ -16,14 +16,16 @@ const userLogin = async ( req, res ) => {
         });
     }
     
-    const { email, password } = req.body;
+    const { username, password } = req.body;
+    console.log(username + ' : ' + password)
     try{
         let user = await User.findOne({
-            email
+            username
         });
         //CHECK USER
         if(!user)
             return res.status(400).json({
+                auth: false,
                 message: "Tài khoản không tồn tại"
         });
         //COMPARE PASSWORD
@@ -31,6 +33,7 @@ const userLogin = async ( req, res ) => {
 
         if(!isMatch)
             return res.status(400).json({
+                auth: false,
                 message: "Sai mật khẩu"
             });
 
@@ -49,6 +52,7 @@ const userLogin = async ( req, res ) => {
             ( err, token ) => {
                 if ( err ) throw err;
                 res.status(200).json({
+                    auth: true,
                     token
                 });
             }
@@ -57,6 +61,7 @@ const userLogin = async ( req, res ) => {
     } catch ( err ) {
         console.error( err );
         res.status(500).json({
+            auth: false,
             message: "Máy chủ đang bận"
         });
     } 
@@ -80,11 +85,12 @@ const userSignup = async ( req, res ) => {
     } = req.body;
     try{
         let user = await User.findOne({
-            email
+            username
         });
         if(user){
             return res.status(400).json({
-                msg: "Tài khoản đã tồn tại"
+                verify: false,
+                message: "Sai tài khoản hoặc mật khẩu"
             });
         }
 
@@ -115,6 +121,7 @@ const userSignup = async ( req, res ) => {
             ( err, token ) => {
                 if ( err ) throw err;
                 res.status(200).json({
+                    verify: true,
                     token
                 }); 
             }
@@ -130,7 +137,14 @@ const userSignup = async ( req, res ) => {
 const userGetMe = async ( req, res ) => {
     try{
         const user = await User.findById(req.user.id);
-        res.json(user);
+        if(user){
+            res.status(200).json({ auth: true, data: user});
+        }else{
+            return res.status(400).json({
+                auth: false,
+                message: "Mã Token không hợp lệ hoặc đã hết phiên đăng nhập"
+            });
+        }
     } catch ( err ) {
         console.log(err);
         res.send({ message: "Có lỗi khi tải thông tải người dùng" });

@@ -13,7 +13,7 @@ const users = require('./route/users');
 const history = require('./route/history');
 
 //IP CONFIG
-const IPCONFIG = process.env.IP || '192.168.1.6';
+const IPCONFIG = process.env.IP || '192.168.1.9';
 const PORT = process.env.PORT || 8000;
 
 

@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Text, View, Image, StyleSheet,
-    SafeAreaView,
+    Text, View, StyleSheet, Image,
+    SafeAreaView, Dimensions,
     TouchableOpacity,
-    Dimensions,
-    FlatList,
+    FlatList, ImageBackground,
 } from 'react-native';
+
+import { theme } from './../core/theme';
 
 import DutyBox from '../components/DutyBox';
 
 import CallApi from './../Utils/CallApi';
 
-const screenWidth = Dimensions.get('window').width;
+import Icon from 'react-native-vector-icons/Ionicons'; // MENU
+
+import ActionButton from '@logvinme/react-native-action-button';
+
+const { width, height } = Dimensions.get('screen');
+
+const LineDivider = () => {
+    return (
+        <View style={{ width: 1, paddingVertical: 18 }}>
+            <View style={{ flex: 1, borderLeftColor: '#64676D', borderLeftWidth: 1 }}></View>
+        </View>
+    )
+}
 
 const TodayDutyScreen = ({ navigation, route }) => {
     const [ duties, setDuties ] = useState([]);
@@ -24,7 +37,6 @@ const TodayDutyScreen = ({ navigation, route }) => {
 
     useEffect( () => {
         refreshDuties(); // RUN
-        console.log(reqRefresh);
     }, []);
 
     useEffect( () => {
@@ -35,18 +47,143 @@ const TodayDutyScreen = ({ navigation, route }) => {
     }, [route.params]);
 
     return (
+        
+        <ImageBackground
+        source={ require('./../assets/Login/background_dot.png') }
+        resizeMode='repeat'
+        style={ styles.background }
+        >
         <SafeAreaView style={ styles.container }>
-            <View style={ styles.quoteBox }>
-                <Text style={ styles.quoteText }>
-                 “Không làm mà đòi có ăn chỉ có ăn đầu buoi ăn cut.”
-                </Text>
-                <Text> - Huấn Rose</Text>
+            <View style={{ height: 200 }}>
+                
+                <View style={{ flex: 1, alignItems: 'center', flexDirection: 'row', paddingHorizontal: 24 }}>
+                        <View style={{ flex: 1 }}>
+                                <View style={{ marginRight: 24 }}>
+                                    <Text style={{ fontSize: 18, color: 'black' }}>Good Morning!</Text>
+                                    <Text style={{ fontSize: 20, color: 'red' }}>{ route.params.fullname }</Text>
+                                </View>
+                        </View>
+                         {/* Points */}
+                         <TouchableOpacity
+                            style={{
+                                backgroundColor: '#F96D41',
+                                height: 40,
+                                paddingLeft: 3,
+                                paddingRight: 12,
+                                borderRadius: 20
+                            }}
+                            onPress={() => { console.log("Point") }}
+                        >
+                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 25, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                                    <Image
+                                        source={ require('./../assets/Logo/logo.png') }
+                                        resizeMode="contain"
+                                        style={{
+                                            width: 20,
+                                            height: 20
+                                        }}
+                                    />
+                                </View>
+
+                                <Text style={{ marginLeft: 8, color: 'white' }}>200 điểm</Text>
+                            </View>
+                        </TouchableOpacity> 
+
+                </View>
+
+                  {/* BoardAnalytics */}
+                <View style={{ flex: 1, justifyContent: 'center', padding: 24 }}>
+                <View style={{ flexDirection: 'row', height: 70, backgroundColor: '#25282F', borderRadius: 21 }}>
+                    {/* Claim */}
+                    <TouchableOpacity
+                        style={{ flex: 1 }}
+                        onPress={() => console.log("Claim")}
+                    >
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <Image
+                                source={ require('./../assets/tick.png') }
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30
+                                }}
+                            />
+                            <Text style={{ marginLeft: 8, color: 'white' }}>0</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    {/* Divider */}
+                    <LineDivider />
+
+                    {/* Get Point */}
+                    <TouchableOpacity
+                        style={{ flex: 1 }}
+                        onPress={() => console.log("Get Point")}
+                    >
+                        <View
+                            style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <View style={{ borderRadius: 15, borderWidth: 1, overflow: 'hidden' }}>
+                            <Image
+                                source={ require('./../assets/todolist.gif') }
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            />
+                            </View>
+                            <Text style={{ marginLeft: 8, color: 'white' }}>0</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    {/* Divider */}
+                    <LineDivider />
+
+                    {/* My Card */}
+                    <TouchableOpacity
+                        style={{ flex: 1 }}
+                        onPress={() => console.log("My Card")}
+                    >
+                        <View
+                            style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                             <View style={{ borderRadius: 15, borderWidth: 1, overflow: 'hidden' }}>
+                            <Image
+                                source={ require('./../assets/user.gif') }
+                                resizeMode="contain"
+                                style={{
+                                    width: 30,
+                                    height: 30
+                                }}
+                            />
+                            </View>
+                            <Text style={{ marginLeft: 8, color: 'white' }}>Tài khoản</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                </View>
+
             </View>
-            <FlatList
-                style={ styles.ListDuties }
+        </SafeAreaView>
+
+        <View style={styles.dutyContainer}>
+        <FlatList
+                style ={{ flex:1 }}
                 numColumns={ 2 } 
                 data={ duties }
-                keyExtractor={ ( item ) => item.dutyId }
+                keyExtractor={ ( item, index ) => `feed_${index}` }
                 renderItem={ ({ item }) => (
                     <TouchableOpacity
                         onPress={ () => {
@@ -59,85 +196,67 @@ const TodayDutyScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                 )}
                 ListEmptyComponent={ 
-                    <View>
+                    <View style={{ padding: 20 }}>
                         <Text>
-                            Add a New Task to get started with Habitator, the best habit
-                            tracker out there !{' '}
+                            Hiện tại bạn chưa có <Text style={{ color:'red' }}>Mục Tiêu</Text>, hãy đặt mục tiêu và hoàn thành nó để hoàn thiện bản thân một cách tốt nhất!{' '}
                         </Text>
                     </View>
                 }
             />
-            <View style={ styles.navbar }>
+        </View>
+            
+            <ActionButton buttonColor="rgba(231,76,60,1)">
+                <ActionButton.Item buttonColor='#9b59b6' title="Thêm mới" onPress={() => { navigation.navigate('DutyTypeScreen') }}>
+                    <Icon name="md-create" style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+                <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
+                    <Icon name="md-notifications-off" style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+                <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => {}}>
+                    <Icon name="md-done-all" style={styles.actionButtonIcon} />
+                </ActionButton.Item>
+            </ActionButton>
 
-                <View style={{ flexDirection: 'row' }}>
-                    <Image
-                        source={ require('./../assets/settingsgear.png') } 
-                        style={ styles.imageBtn }
-                    />
-                    <Image
-                        source={ require('./../assets/graphpresentation.png') } 
-                        style={ styles.imageBtn }
-                    />
-                </View>
-                <TouchableOpacity
-                    onPress={() => {
-                        navigation.navigate('DutyTypeScreen');
-                    }}
-                >
-                <Text style={styles.newDutyBtn}>Thêm NV</Text>
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+        
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
+    },
+    background: {
         flex: 1,
-        paddingBottom: 80,
-        backgroundColor: 'ivory',
-        alignItems: 'center',
+        width: '100%',
+        backgroundColor: theme.colors.surface,
     },
-    quoteBox: {
-        padding: 20,
-        marginBottom: 10,
-    },
-    quoteText: {
-        color: 'grey',
-        fontStyle: 'italic',
-        alignSelf: 'flex-end'
-    },
-    ListDuties:{
-        
-    },
-    navbar: {
-        flex: 2,
-        flexDirection: 'row',
-        position: 'absolute',
-        paddingHorizontal: 10,
-        bottom: 0,
-        width: screenWidth-10,
-        alignSelf: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: 'white',
-        borderRadius: 20,
-    },
-    imageBtn: {
-        width: 50,
-        height: 50,
-        marginHorizontal: 15,
-        alignSelf: 'center',
-    },
-    newDutyBtn:{
-        padding: 15,
-        marginVertical: 10,
-        borderRadius: 10,
-        backgroundColor: '#1A535C',
-        color: 'white',
-        fontSize: 18,
+    headerText: {
+        fontSize: 45,
         fontWeight: 'bold',
-        justifyContent: 'center',
-    }
+        paddingLeft: 20
+    },
+    headerImage: {
+        width: 60,
+        height: 60,
+        borderRadius: 50,
+    },
+    logo: {
+        resizeMode: 'contain',
+        height: 90,
+        width: 130,
+        alignSelf: 'center'
+    },
+    dutyContainer:{
+        flex: 1,
+        flexDirection: 'row',
+        marginTop: 12,
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+    
 
 });
 

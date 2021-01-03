@@ -1,16 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import moment from 'moment'; // parse DATE
+import Icon from 'react-native-vector-icons/Ionicons'; // MENU
 
-const DutyCalendar = ({ duty }) => {
-    const dutyHistoryRender = duty.history;
+const { width, height } = Dimensions.get('screen');
+const DutyCalendar = ({ duty, hismarked }) => {
+
+    const dutyHistoryRender = hismarked;
+
+    
 
     const handleArrowDirection = ( direct )  => {
         if( direct === 'right' ){
-            return <Text> Sau </Text>;
+            return <Text> <Icon name="caret-forward-outline" style={styles.actionButtonIcon} /> </Text>;
         }else if ( direct === 'left' ){
-            return <Text> Trước </Text>;
+            return <Text> <Icon name="caret-back-outline" style={styles.actionButtonIcon} /> </Text>;
         }
     };
 
@@ -22,12 +27,13 @@ const DutyCalendar = ({ duty }) => {
     };
 
     return (
-        <View>
+        <View style={ styles.container }>
             <Calendar
+                style={ styles.calendar }
                 current={ Date() }
-                minDate={ '2020-01-01' }
-                maxDate={ '2020-12-31' }
-                monthFormat={ 'MMM yyyy' }
+                minDate={ '2021-01-01' }
+                maxDate={ '2021-12-31' }
+                monthFormat={ 'MM yyyy' }
                 renderArrow={ ( direct ) => handleArrowDirection( direct ) }
                 hideArrows={ false }
                 firstDay={ 1 }
@@ -41,6 +47,7 @@ const DutyCalendar = ({ duty }) => {
                 markedDates= { dutyHistoryRender }
                 hideDayNames={false}
                 showWeekNumbers={false}
+                enableSwipeMonths={true}
                 disableAllTouchEventsForDisabledDays={true}
            />
         </View>
@@ -51,7 +58,19 @@ const DutyCalendar = ({ duty }) => {
 const styles = StyleSheet.create({
     showMonth:{
         fontWeight: 'bold'
-    }
+    },
+    calendar: {
+    maxHeight: 400,
+    width: width - 20,
+    },
+    container:{
+        marginVertical: 5,
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: '#FE0000',
+    },
 });
 
 export default DutyCalendar;

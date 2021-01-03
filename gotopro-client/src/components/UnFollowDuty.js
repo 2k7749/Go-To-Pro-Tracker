@@ -7,6 +7,19 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import CallApi from './../Utils/CallApi';
+
+const selectedColor = [
+    'deeppink',
+    'aqua',
+    'chartreuse',
+    'crimson',
+    'gold',
+    'indigo',
+    'salmon',
+    'slateblue'
+  ];
+
 
 const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
 
@@ -26,6 +39,18 @@ const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
     const borderColor = {
         borderColor: duty.color,
     };
+
+    const colorRamdom = () => {
+        return selectedColor[Math.floor((Math.random()*selectedColor.length))];
+    }
+
+    const newHistory = {
+        dutyId: id,
+        dateString: Date.now(),
+        timestamps: Date.now(),
+        selectedColor: colorRamdom(),
+        selected: true
+    }
 
     let padToTwo = ( number ) => ( number <= 9 ? `0${number}` : number );
 
@@ -62,7 +87,14 @@ const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
                         time.mins >= timeGoal.mins &&
                         duty.status === false
                         ){
-                            Alert.alert('You have reached your goal for the day!');
+                            CallApi.updateDutyHistory(newHistory).then( (res) => {
+                                if( res.success === true ){
+                                    Alert.alert('Bạn đã hoàn thành mục tiêu hôm nay!');
+                                }else{
+                                    Alert.alert('Có lỗi khi cập nhật lịch sử!');
+                                }
+                            }); 
+                            
                             toggleDutyDoneCallback( e, id, status );
                             setStatus( true );
                             setIsRunning( false );
@@ -77,27 +109,35 @@ const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
     );
 
     const startUnfollowduty = (e) => {
+       try{
         e.stopPropagation();
         setIsRunning(true);
+       } catch ( err ) {
+           console.log(err); 
+       }
     };
     
     const pauseUnfollowduty = (e) => {
+        try{
         e.stopPropagation();
         setIsRunning(false);
+        } catch ( err ) {
+        console.log(err); 
+        }
     };
     
     const resetUnfollowduty = (e) => {
         pauseUnfollowduty(e);
         Alert.alert(
-            'Reset Follow Duty',
-            'Are you sure you want to reset the stopwatch for this task?',
+            'Thiết đặt lại',
+            'Bạn chắc chắn muốn đặt lại đồng hồ đếm cho mục tiêu này ?',
             [
                 {
-                    text: 'Cancel',
+                    text: 'Huỷ',
                     style: 'cancel',
                 },
                 {
-                    text: 'OK',
+                    text: 'Đắt lại',
                     onPress: () => {
                         setTime({
                             hours: 0,
@@ -121,23 +161,23 @@ const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
                 {/* is a simple javascript function that will be outside the class and it helps in making the digits in stopwatch exactly of length “2” */}
                 </Text>
                 <Text style={ styles.isRunning }>
-                    { isRunning ? 'Running' : 'Stopped' }
+                    { isRunning ? 'Đang chạy' : 'Đã dừng' }
                 </Text>
             </View>
 
-            <View style={ styles.container }>
+            <View style={ styles.containerButton }>
                 {
                     isRunning ? (
                         <TouchableOpacity onPress={ (e) => pauseUnfollowduty(e) }>
                             <Image
-                                source={ require('./../assets/pause.png') }
+                                source={ require('./../assets/pause.gif') }
                                 style={ styles.imageBtn }
                             />
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity onPress={ (e) => startUnfollowduty(e) }>
                             <Image
-                                source={ require('./../assets/play.png') }
+                                source={ require('./../assets/btnplay.gif') }
                                 style={ styles.imageBtn }
                             />
                         </TouchableOpacity>
@@ -147,7 +187,7 @@ const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
 
                         <TouchableOpacity onPress={ (e) => resetUnfollowduty(e) }>
                             <Image
-                                source={ require('./../assets/reset.png') }
+                                source={ require('./../assets/reset.gif') }
                                 style={ styles.imageBtn }
                             />
                         </TouchableOpacity>
@@ -161,6 +201,15 @@ const UnFollowDuty = ({ duty, toggleDutyDoneCallback }) => {
 
 const styles = StyleSheet.create({
     container:{
+        alignSelf: 'center',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 2,
+        margin: 2,
+        borderWidth: 1,
+    },
+    containerButton: {
+        flexDirection: 'row',
         alignSelf: 'center',
         backgroundColor: 'white',
         borderRadius: 10,

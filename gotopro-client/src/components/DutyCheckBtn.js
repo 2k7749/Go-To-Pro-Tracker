@@ -25,10 +25,9 @@ const DutyCheckBtn = ({ duty }) => {
 
 const styles = StyleSheet.create({
     imageBtn: {
-        alignSelf: 'center',
-        width: 40,
-        height: 40,
-        marginHorizontal: 10,
+        width: 120,
+        height: 50,
+        resizeMode: 'contain',
     }
 })
 

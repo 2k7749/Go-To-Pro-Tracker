@@ -5,22 +5,29 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  ImageBackground
 } from 'react-native';
 
 import DutyType from '../components/DutyType';
+import { theme } from './../core/theme';
 
 const dutyTypes = [
-    { label: 'time', description: 'Theo dõi mục tiêu' },
-    { label: 'count', description: 'Mục tiêu thực hiện nhiều lần' },
-    { label: 'check', description: 'Mục tiêu thực hiện 1 lần' },
+    { label: 'time', title: 'Thời gian', description: 'Theo dõi mục tiêu' },
+    { label: 'count', title: 'Đếm số lần', description: 'Mục tiêu thực hiện nhiều lần' },
+    { label: 'check', title: 'Đánh dấu', description: 'Mục tiêu thực hiện 1 lần' },
   ];
 
 const DutyTypes = ({ navigation }) => {
     return (
+        <ImageBackground
+            source={ require('./../assets/Login/background_dot.png') }
+            resizeMode='repeat'
+            style={ styles.background }
+        >
         <SafeAreaView style= { styles.container }>
             <View>
                 <FlatList
-                    style={ styles.container }
+                    style={{ alignContent: 'center' }}
                     data={ dutyTypes }
                     keyExtractor={ (item) => item.label }
                     renderItem={ ({ item }) => (
@@ -30,7 +37,7 @@ const DutyTypes = ({ navigation }) => {
                             });
                         }}
                         >
-                            <DutyType type={ item.label } description={ item.description }>
+                            <DutyType type={ item.label } title={ item.title }  description={ item.description }>
                             {' '}
                             </DutyType>
                         </TouchableOpacity>
@@ -38,14 +45,19 @@ const DutyTypes = ({ navigation }) => {
                 />
             </View>
         </SafeAreaView>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 50,
-        backgroundColor: 'ivory',
+        padding: 50
+    },
+    background: {
+        flex: 1,
+        width: '100%',
+        backgroundColor: theme.colors.surface,
     }
 })
 

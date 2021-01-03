@@ -8,19 +8,22 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  ImageBackground
 } from 'react-native';
-import { Picker } from '@react-native-community/picker';
+//import { Picker } from '@react-native-community/picker';
 import CallApi from '../Utils/CallApi';
 import { v4 as uuidv4 } from 'uuid';
 import 'react-native-get-random-values';
+import { theme } from './../core/theme';
 
-const dutyColors = [
-  { colorCode: '#f9c74f', displayName: 'Yellow' },
-  { colorCode: '#90be6d', displayName: 'Green' },
-  { colorCode: 'pink', displayName: 'Pink' },
-  { colorCode: '#4ECDC4', displayName: 'Light Blue' },
-  { colorCode: '#FF6B6B', displayName: 'Light Red' },
-];
+// const dutyColors = [
+//   { colorCode: '#f9c74f', displayName: 'Yellow' },
+//   { colorCode: '#90be6d', displayName: 'Green' },
+//   { colorCode: 'pink', displayName: 'Pink' },
+//   { colorCode: '#4ECDC4', displayName: 'Light Blue' },
+//   { colorCode: '#FF6B6B', displayName: 'Light Red' },
+// ];
+
 
 const AddDutyScreen = ({ route, navigation }) => {
   const [ dutyName, setDutyName ] = useState('');
@@ -32,12 +35,22 @@ const AddDutyScreen = ({ route, navigation }) => {
   const { type } = route.params;
 
   
+  const dutyColors = ['#5CD859', '#24A6D9', '#595BD9', '#8022D9', '#D159D8', '#D85963', '#D88559'];
+
+  const renderColors = () => {
+    return dutyColors.map( color => {
+      return (
+        <TouchableOpacity key={color} style={[ styles.colorSelect, {backgroundColor: color}]} onPress={ () => setDutyColor(color)} />
+      )
+    })
+  }
+  
   const displayType = () => {
     if(type === 'time'){
       return(
         <View>
           <Text style={ styles.basictext }>
-            Daily Goal
+            Số lần sẽ hoàn thành mỗi ngày
           </Text>
           <View style={ styles.timeInput }>
               <Text>
@@ -64,10 +77,10 @@ const AddDutyScreen = ({ route, navigation }) => {
     }else if( type === 'count' ){
       return (
         <View>
-          <Text style={ styles.text }>Daily Goal</Text>
+          <Text style={ styles.basictext }>Số lần sẽ hoàn thành mỗi ngày</Text>
           <View style={ styles.countInput }>
             <TextInput
-              style={ styles.input }
+              style={ styles.textinput }
               value={ dutyGoal }
               keyboardType="numeric"
               onChangeText={ setDutyGoal }
@@ -106,7 +119,7 @@ const AddDutyScreen = ({ route, navigation }) => {
         status: false,
         currentStreak: 0,
         maxStreak: 0,
-        history: {},
+        history: [], //<= FIX
       };
       CallApi.postDuty(newDuty).then( () => {
         navigation.navigate( 'TodayDutyScreen', { reqRefresh } );
@@ -116,6 +129,11 @@ const AddDutyScreen = ({ route, navigation }) => {
 
 
   return (
+    <ImageBackground
+            source={ require('./../assets/Login/background_dot.png') }
+            resizeMode='repeat'
+            style={ styles.background }
+        >
     <SafeAreaView style={ styles.container }>
       <ScrollView style={ styles.scrollView }>
         <Text style={ styles.basictext }>
@@ -125,21 +143,21 @@ const AddDutyScreen = ({ route, navigation }) => {
           style={ styles.textinput }
           value={ dutyName }
           onChangeText={ setDutyName }
-          placeholder="Ex. Workout"
+          placeholder="Ví dụ: Ôn bài"
         />
-        <Text style={ styles.basictext }>Why?</Text>
+        <Text style={ styles.basictext }>Giúp?</Text>
         <TextInput 
           style={ styles.textinput }
           value={ dutyDescription }
           multiline={ true }
           numberOfLines={ 3 }
           onChangeText={ setDutyDescription }
-          placeholder="Ex. To get fit for summer"
+          placeholder="Ví dụ: Mai vào cuộc thi chính"
         />
         <Text style={ styles.basictext }>
-          Color
+          Chọn màu
         </Text>
-        <Picker
+        {/* <Picker
           style={[ styles.boxpicker, { backgroundColor: dutyColor } ]}
           selectedValue={ dutyColor }
           onValueChange={ ( colorVal ) => setDutyColor(colorVal) }
@@ -152,16 +170,19 @@ const AddDutyScreen = ({ route, navigation }) => {
                 label={ colors.displayName }
               />
             ))}
-          </Picker>
+          </Picker> */}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 }}>
+            {renderColors()}
+          </View>
+          
+
           <View>{ displayType() }</View>
-          <TouchableOpacity onPress={ handleSubmit }>
-              <View style={ styles.btnaddduty }>
-                <Text style={ styles.textadd }> Thêm Mới </Text>
-              </View>
+          <TouchableOpacity onPress={ handleSubmit } style={[ styles.createBtn, { backgroundColor: dutyColor }]}>
+                <Text style={ styles.textadd }> Tạo mục tiêu </Text>
           </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
-
+    </ImageBackground>
   );
 
 
@@ -170,9 +191,15 @@ const AddDutyScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   basictext: {
+    paddingTop: 10,
     fontSize: 18,
     fontWeight: 'bold',
     color: 'grey',
+  },
+  background: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: theme.colors.surface,
   },
   timeInput: {
     flexDirection: 'column',
@@ -187,7 +214,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'ivory',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     padding: 30,
@@ -204,21 +230,22 @@ const styles = StyleSheet.create({
   pickerItem: {
     backgroundColor: 'lavender'
   },
-  btnaddduty: {
-    width: 150,
-    height: 50,
-    backgroundColor: '#1A535C',
-    borderRadius: 10,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 20,
-    marginHorizontal: 10,
-  },
   textadd: {
     color: 'white',
     fontSize: 20,
     alignSelf: 'center'
+  },
+  createBtn: {
+    marginTop: 24,
+    height: 50,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  colorSelect: {
+    width: 30,
+    height: 30,
+    borderRadius: 4
   }
 });
 
