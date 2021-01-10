@@ -16,6 +16,10 @@ const UserSchema = mongoose.Schema({
     email: {
         type: String,
         required: true
+    },
+    notiToken: {
+        type: String,
+        required: false
     }
     // ,
     // createdAt: {

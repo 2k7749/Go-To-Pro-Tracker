@@ -83,6 +83,7 @@ const userSignup = async ( req, res ) => {
         password,
         fullname,
     } = req.body;
+    const notiToken = '';
     try{
         let user = await User.findOne({
             username
@@ -98,7 +99,8 @@ const userSignup = async ( req, res ) => {
             username,
             email,
             password,
-            fullname
+            fullname,
+            notiToken
         });
 
         const salt = await bcrypt.genSalt(config.saltRounds);
@@ -151,4 +153,28 @@ const userGetMe = async ( req, res ) => {
     }
 };
 
-module.exports = { userLogin, userSignup, userGetMe };
+const addNotiToken = async (req, res) => {
+    try{
+        const userid = req.body.userid;
+        const notiToken = req.body.notiToken;
+        console.log("set noti Token for " + userid);
+
+        const newUpdateId = { _id: userid };
+        const newDocUpdate = {
+            $set: {
+              notiToken: notiToken,
+            },
+          };
+        const options = { upsert: true };
+
+        await User.update( newUpdateId, newDocUpdate, options );
+
+        res.status(201).send({ success: true, message: "Cập nhật NotiToken thành công" });
+    }catch(err){
+        res.status(500);
+        console.log(err);
+    }
+
+};
+
+module.exports = { userLogin, userSignup, userGetMe, addNotiToken };
