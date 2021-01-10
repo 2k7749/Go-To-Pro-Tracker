@@ -37,7 +37,12 @@ const DutyCount = ({ duty, toggleDutyDoneCallback }) => {
 
     const increCount = (e) => {
         e.stopPropagation(); // Xu ly trong 1 Scope nhat dinh khong lan toa
-        setCount( ( currentVal ) => currentVal + 1 );
+        if( count >= duty.goal){
+            setCount(duty.goal);
+        }else{
+            setCount( ( currentVal ) => currentVal + 1 );
+        }
+        
         if( count === duty.goal && duty.status === false ){
             CallApi.updateDutyHistory(newHistory).then( (res) => {
                 if( res.success === true ){
@@ -54,7 +59,12 @@ const DutyCount = ({ duty, toggleDutyDoneCallback }) => {
 
     const decreCount = (e) => {
         e.stopPropagation();
-        setCount ( ( currentVal ) => currentVal - 1 );
+        if( count <= 0 ){
+            setCount(0);
+        }else{
+            setCount ( ( currentVal ) => currentVal - 1 );
+        }
+        
         if( count === duty.goal && count >= 0 && duty.status === true){
             toggleDutyDoneCallback(e, id, status);
             status = false;

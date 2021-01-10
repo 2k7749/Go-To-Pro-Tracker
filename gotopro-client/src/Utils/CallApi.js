@@ -94,12 +94,43 @@ const CallApi = {
                 'x-access-token': token,
             }
         }); 
+    },
+
+    
+    addNotiToken: async ( body ) => {
+        return fetchMethodData( '/user/addnotitoken', {
+            method: 'POST',
+            headers: {
+                'accept':'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+        });
+    },
+    
+
+    sendNotification: async ( message ) => {
+        return fetchMethodDataFullPatch( 'https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Accept-encoding': 'gzip, deflate',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(message),
+        }); 
     }
 
 };
 
 const fetchMethodData = ( path, options ) => {
     return fetch( BASE_URL + path, options )
+        .then( (res) => res.json() )
+        .catch( (err) => { console.log(err); } )
+};
+
+const fetchMethodDataFullPatch = ( path, options ) => {
+    return fetch( path, options )
         .then( (res) => res.json() )
         .catch( (err) => { console.log(err); } )
 };

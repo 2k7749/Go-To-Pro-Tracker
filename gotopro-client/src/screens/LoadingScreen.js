@@ -1,22 +1,24 @@
 import React, { useEffect } from 'react';
-import { Text, FlatList, Image, StatusBar, StyleSheet, View, Animated, Dimensions } from 'react-native';
+import { Image, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoadingScreen = ({ navigation }) => {
 
-    
-  useEffect(() => {
-    const storage = async()=>{
-      let items = await AsyncStorage.getItem('@token_Key');
-      if(items){
-        navigation.replace('HomeScreen', { userToken : items })
-      }
-    }
-  storage()
-  }, []);
+      useEffect(() => {
+      storage();
+      }, []);
+
+      const storage = async () => {
+        let items = await AsyncStorage.getItem('@token_Key');
+        if(items){
+          navigation.replace('HomeScreen', { userToken : items })
+        }else{
+          navigation.replace('Main')
+        }
+      }  
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
              <Image
                                 source={ require('./../assets/loading.gif') }
                                 resizeMode="contain"

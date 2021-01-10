@@ -10,14 +10,18 @@ import CallApi from '../Utils/CallApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Background from './../components/Login/Background';
 
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+
 const { width, height } = Dimensions.get('screen');
 
 const HomeScreen = ({ navigation, route }) => {
 
     const { userToken } = route.params;
     const [ userData, setUserData ] = useState({});
+    const [ userNotiToken, setUserNotiToken ] = useState('');
 
-    const test = 'xx'
     useEffect( () => {
         CallApi.authUserMe(userToken).then( async (res) => {
             if(res.auth === false){
@@ -27,10 +31,77 @@ const HomeScreen = ({ navigation, route }) => {
                 setUserData(res.data);
             }
         });
-
+        registerForPushNotificationsAsync();
     }, []);
 
     //console.log('HOMESCREEN DATA USER ' + userData.fullname)
+
+
+
+//   useEffect( () => {
+    
+//     (async () => {
+//       const user = await firebase.collection("users")
+//       .doc( firebase.auth().currentUser.uid )
+//       .get();
+
+//       setCurrentUser(user.data())
+//     })();
+
+//   });
+
+//   useEffect( () => {
+//     ( () => )();
+//   }, []) // RUN CREATE TOKEN EXPO NOTIFICATIONS
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    const notiTokenis = {
+        userid: userData._id,
+        notiToken: token
+    };
+
+
+    if(token && userData.notiToken == ''){
+        try{
+            CallApi.addNotiToken(notiTokenis).then( (res) => {
+                if(res.success === true){
+                    setUserNotiToken(res.notiToken);
+                    console.log(res.success)
+                }
+            })
+        }catch( err ){
+            console.log( err );
+        }
+    }
+    
+    console.log(userNotiToken);
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    return token;
+  }
+  
 
     return (
      <Background>

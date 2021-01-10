@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
-import { Text, FlatList, Image, StatusBar, StyleSheet, View, Animated, Dimensions } from 'react-native';
+import React from 'react';
+import { Text, Image, StatusBar, StyleSheet, View, Animated, Dimensions } from 'react-native';
 import Button from './../components/Login/Button';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('screen');
 
