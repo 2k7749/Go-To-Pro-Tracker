@@ -49,6 +49,10 @@ const DutySchema = mongoose.Schema({
         default: Date.now,
         required: true
     },
+    userId: {
+        type: String,
+        required: true
+    },
     history: [{
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'histories'

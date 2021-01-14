@@ -1,10 +1,12 @@
 //MODEL
 const Duties = require("./../models/Duties");
+const User = require("./../models/User");
 
 //Get Duties
 const getDuties = async (req, res) => {
     try{
-        const fetchDuties = await Duties.find( {} );
+        const userId = req.params.id;
+        const fetchDuties = await Duties.find({ "userId": userId });
         res.status(200).send(fetchDuties);
     }catch(err){
         res.status(500);
@@ -15,6 +17,8 @@ const getDuties = async (req, res) => {
 //POST Duty
 const postDuty = async (req, res) => {
     try{
+        const user = await User.findById(req.user.id);
+        if(user){
         const {
             dutyName,
             description,
@@ -27,6 +31,7 @@ const postDuty = async (req, res) => {
             status,
             currentStreak,
             maxStreak,
+            userId,
             history
         } = req.body;
         const newDuty = req.body; //body parse
@@ -43,10 +48,29 @@ const postDuty = async (req, res) => {
             status,
             currentStreak,
             maxStreak,
+            userId,
             history
         });
+
+        
+        const userIdUpdate = { _id: userId };
+        const dataPush = { $push: { userDuties: duty  } }
+        
+        await User.findOneAndUpdate(userIdUpdate, dataPush, {
+            "upsert": true,
+            "new": true,
+            useFindAndModify: false
+        });
+
         await duty.save();
+        
         res.status(201).send(newDuty);
+    }else{
+        return res.status(400).json({
+            auth: false,
+            message: "Mã Token không hợp lệ hoặc đã hết phiên đăng nhập"
+        });
+    }
     }catch(err){
         res.status(500);
         console.log(err);

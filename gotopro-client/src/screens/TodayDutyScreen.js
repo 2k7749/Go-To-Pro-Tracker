@@ -29,12 +29,12 @@ const LineDivider = () => {
 const TodayDutyScreen = ({ navigation, route }) => {
     const [ duties, setDuties ] = useState([]);
     const reqRefresh = route.params ? route.params.reqRefresh : null;
-
+    const { userToken, userId } = route.params;
     const refreshDuties = async () => {
-        const allDuties = await CallApi.getAllDuties();
+        const allDuties = await CallApi.getAllDuties(userId);
+        console.log(allDuties)
         setDuties([...allDuties]);
     };
-
     useEffect( () => {
         refreshDuties(); // RUN
     }, []);
@@ -189,6 +189,7 @@ const TodayDutyScreen = ({ navigation, route }) => {
                         onPress={ () => {
                             navigation.navigate('DutyDetailScreen', {
                                 duty: item,
+                                userToken: userToken
                             });
                         }}
                         >  
@@ -206,13 +207,13 @@ const TodayDutyScreen = ({ navigation, route }) => {
         </View>
             
             <ActionButton buttonColor="rgba(231,76,60,1)">
-                <ActionButton.Item buttonColor='#9b59b6' title="Thêm mới" onPress={() => { navigation.navigate('DutyTypeScreen') }}>
+                <ActionButton.Item buttonColor='#9b59b6' title="Thêm mới" onPress={() => { navigation.navigate('DutyTypeScreen', { userToken: userToken, userId: userId }) }}>
                     <Icon name="md-create" style={styles.actionButtonIcon} />
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='#3498db' title="Notifications" onPress={() => {}}>
+                <ActionButton.Item buttonColor='#3498db' title="Thông báo" onPress={() => {}}>
                     <Icon name="md-notifications-off" style={styles.actionButtonIcon} />
                 </ActionButton.Item>
-                <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => {}}>
+                <ActionButton.Item buttonColor='#1abc9c' title="Nhiệm vụ" onPress={() => {}}>
                     <Icon name="md-done-all" style={styles.actionButtonIcon} />
                 </ActionButton.Item>
             </ActionButton>

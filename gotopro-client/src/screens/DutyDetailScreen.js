@@ -29,6 +29,8 @@ const DutyDetailScreen = ({ navigation, route }) => {
     setHistory({...allHistory});
   };
 
+  const { userToken } = route.params;
+
   const [ scrollViewWholeHeight, setScrollViewWholeHeight ] = useState(1);
   const [ scrollViewVisibleHeight, setScrollViewVisibleHeight ] = useState(0);
 
@@ -79,7 +81,7 @@ const DutyDetailScreen = ({ navigation, route }) => {
   const handleDeleteDuty = ( idInputToDelete ) => {
     const reqRefresh = true;
 
-    CallApi.deleteDuty( idInputToDelete ).then( () => {
+    CallApi.deleteDuty( idInputToDelete, userToken ).then( () => {
       navigation.navigation(' TodayDuties ', { reqRefresh });
     });
   };

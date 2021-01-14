@@ -138,7 +138,7 @@ const HomeScreen = ({ navigation, route }) => {
                 
                 <TouchableOpacity
                     onPress={ () => { 
-                        navigation.navigate('TodayDutyScreen', { fullname: userData.fullname }); // MOVE TO SCREEN TODY DUTIES
+                        navigation.navigate('TodayDutyScreen', { fullname: userData.fullname, userToken: userToken, userId: userData._id  }); // MOVE TO SCREEN TODY DUTIES
                     }} 
                 >
 

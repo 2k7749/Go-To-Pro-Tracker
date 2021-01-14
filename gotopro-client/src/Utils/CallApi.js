@@ -1,9 +1,9 @@
 const BASE_URL = 'http://192.168.1.12:8000';
 
 const CallApi = {
-    getAllDuties: async () => {
+    getAllDuties: async (userId) => {
         try{
-            const result = await fetch( BASE_URL + '/duties' );
+            const result = await fetch( BASE_URL + '/duties/' + userId);
             const dataduties = await result.json();
             return dataduties;
         }catch(err){
@@ -11,23 +11,25 @@ const CallApi = {
             return [];
         }
     },
-    postDuty: async (body) => {
+    postDuty: async (body, token) => {
         //console.log(JSON.stringify(body));
         return fetchMethodData( '/duties', {
             method: 'POST',
             headers: {
                 'accept':'application/json',
                 'Content-Type': 'application/json',
+                'x-access-token': token,
             },
             body: JSON.stringify(body),
         });
     },
-    deleteDuty: async (dutyId) => {
+    deleteDuty: async (dutyId, token) => {
         return fetchMethodData( `/duties/${dutyId}`, {
             method: 'DELETE',
             header: {
                 'accept':'application/json',
                 'Content-Type': 'application/json',
+                'x-access-token': token,
             },
         });
     },

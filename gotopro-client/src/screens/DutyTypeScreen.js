@@ -17,7 +17,9 @@ const dutyTypes = [
     { label: 'check', title: 'Đánh dấu', description: 'Mục tiêu thực hiện 1 lần' },
   ];
 
-const DutyTypes = ({ navigation }) => {
+const DutyTypes = ({ navigation, route }) => {
+    const { userToken, userId } = route.params;
+
     return (
         <ImageBackground
             source={ require('./../assets/Login/background_dot.png') }
@@ -33,7 +35,9 @@ const DutyTypes = ({ navigation }) => {
                     renderItem={ ({ item }) => (
                         <TouchableOpacity onPress={ () => {
                             navigation.navigate('AddDutyScreen', {
-                                type: item.label
+                                type: item.label,
+                                userToken: userToken,
+                                userId: userId,
                             });
                         }}
                         >

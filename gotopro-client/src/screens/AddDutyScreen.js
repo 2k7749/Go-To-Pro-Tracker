@@ -32,7 +32,7 @@ const AddDutyScreen = ({ route, navigation }) => {
   const [ dutyGoal, setDutyGoal] = useState('0');
   const [ dutyHours, setDutyHours] = useState('0');
   const [ dutyMinutes, setDutyMinutes] = useState('0');
-  const { type } = route.params;
+  const { type, userToken, userId } = route.params;
 
   
   const dutyColors = ['#5CD859', '#24A6D9', '#595BD9', '#8022D9', '#D159D8', '#D85963', '#D88559'];
@@ -119,9 +119,10 @@ const AddDutyScreen = ({ route, navigation }) => {
         status: false,
         currentStreak: 0,
         maxStreak: 0,
+        userId: userId,
         history: [], //<= FIX
       };
-      CallApi.postDuty(newDuty).then( () => {
+      CallApi.postDuty(newDuty, userToken).then( () => {
         navigation.navigate( 'TodayDutyScreen', { reqRefresh } );
       }); 
     }

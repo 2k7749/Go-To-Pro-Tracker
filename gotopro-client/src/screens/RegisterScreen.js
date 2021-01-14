@@ -39,7 +39,8 @@ const RegisterScreen = ({ navigation }) => {
             fullname: fullname.value,
             username: username.value,
             email: email.value,
-            password: password.value
+            password: password.value,
+            userDuties: [],
         };
 
         CallApi.signupUser(signupBody).then( (res) => {

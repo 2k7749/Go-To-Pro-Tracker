@@ -20,7 +20,11 @@ const UserSchema = mongoose.Schema({
     notiToken: {
         type: String,
         required: false
-    }
+    },
+    userDuties: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'duties'
+    }]
     // ,
     // createdAt: {
     //     type: Date,

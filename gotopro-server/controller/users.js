@@ -82,6 +82,7 @@ const userSignup = async ( req, res ) => {
         email,
         password,
         fullname,
+        userDuties,
     } = req.body;
     const notiToken = '';
     try{
@@ -100,6 +101,7 @@ const userSignup = async ( req, res ) => {
             email,
             password,
             fullname,
+            userDuties,
             notiToken
         });
 
