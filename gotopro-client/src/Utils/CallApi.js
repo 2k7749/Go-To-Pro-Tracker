@@ -1,4 +1,4 @@
-const BASE_URL = 'http://192.168.1.9:8000';
+const BASE_URL = 'http://192.168.1.12:8000';
 
 const CallApi = {
     getAllDuties: async () => {
@@ -97,29 +97,30 @@ const CallApi = {
     },
 
     
-    addNotiToken: async ( body ) => {
+    addNotiToken: async ( body, token ) => {
         return fetchMethodData( '/user/addnotitoken', {
             method: 'POST',
             headers: {
                 'accept':'application/json',
                 'Content-Type': 'application/json',
+                'x-access-token': token,
             },
             body: JSON.stringify(body),
         });
     },
     
 
-    sendNotification: async ( message ) => {
-        return fetchMethodDataFullPatch( 'https://exp.host/--/api/v2/push/send', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Accept-encoding': 'gzip, deflate',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(message),
-        }); 
-    }
+    // sendNotification: async ( message ) => {
+    //     return fetchMethodDataFullPatch( 'https://exp.host/--/api/v2/push/send', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Accept-encoding': 'gzip, deflate',
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(message),
+    //     }); 
+    // }
 
 };
 

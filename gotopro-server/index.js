@@ -3,6 +3,9 @@ const cors = require('cors');
 
 const bodyParser = require('body-parser');
 
+const cron = require('node-cron');
+const axios = require('axios');
+
 //DB CONNECT HERE
 const InitiateMongoServer = require("./config/db");
 InitiateMongoServer();
@@ -13,7 +16,7 @@ const users = require('./route/users');
 const history = require('./route/history');
 
 //IP CONFIG
-const IPCONFIG = process.env.IP || '192.168.1.9';
+const IPCONFIG = process.env.IP || '192.168.1.12';
 const PORT = process.env.PORT || 8000;
 
 
@@ -35,7 +38,21 @@ app.use(users);
 
 app.get("/", (req, res) => {
     res.json({ message: "API Working" });
-  });
+});
+
+// const sendNotification = (expoPushToken) => {
+//     const message = {
+//         to: expoPushToken,
+//         sound: 'default',
+//         title: 'Original Title',
+//         body: 'And here is the body!'
+//       };
+//     axios.post('https://exp.host/--/api/v2/push/send', message);
+// }
+
+// var task = cron.schedule('*/1 * * * *', () => {
+//     sendNotification();
+// });
 
 (async () => {
     try{

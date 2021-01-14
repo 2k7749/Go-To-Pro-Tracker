@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     Text, View, Image, StyleSheet,
     SafeAreaView,
@@ -16,11 +16,22 @@ import Constants from 'expo-constants';
 
 const { width, height } = Dimensions.get('screen');
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
 const HomeScreen = ({ navigation, route }) => {
 
     const { userToken } = route.params;
     const [ userData, setUserData ] = useState({});
     const [ userNotiToken, setUserNotiToken ] = useState('');
+    const [ notification, setNotification ] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
 
     useEffect( () => {
         CallApi.authUserMe(userToken).then( async (res) => {
@@ -31,28 +42,60 @@ const HomeScreen = ({ navigation, route }) => {
                 setUserData(res.data);
             }
         });
-        registerForPushNotificationsAsync();
     }, []);
 
-    //console.log('HOMESCREEN DATA USER ' + userData.fullname)
-
-
-
-//   useEffect( () => {
+    useEffect( () => {
+        
+        registerForPushNotificationsAsync().then( token => {
+            const notiTokenis = {
+                userid: userData._id,
+                notiToken: token
+            };
     
-//     (async () => {
-//       const user = await firebase.collection("users")
-//       .doc( firebase.auth().currentUser.uid )
-//       .get();
+            if(token){
+                setUserNotiToken(token)
+            }
+        
+            if(token != null && userData.notiToken != null){
+                    CallApi.addNotiToken(notiTokenis, userToken)
+                    //.then( res => { console.log(res)})
+            }
+      }); // REGISTER TOKEN
 
-//       setCurrentUser(user.data())
-//     })();
+      // This listener is fired whenever a notification is received while the app is foregrounded
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification);
+      });
+  
+      // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response);
+      });
 
-//   });
+      //sendPushNotification(userNotiToken)
+      
+      return () => {
+        Notifications.removeNotificationSubscription(notificationListener);
+        Notifications.removeNotificationSubscription(responseListener);
+      };
 
-//   useEffect( () => {
-//     ( () => )();
-//   }, []) // RUN CREATE TOKEN EXPO NOTIFICATIONS
+
+    }, [])
+
+
+//   //SEND NOTI
+//   const sendPushNotification = async (userNotiToken) => {
+//     const message = {
+//       to: userNotiToken,
+//       sound: 'default',
+//       title: 'Original Title',
+//       body: 'And here is the body!'
+//     };
+  
+//     await CallApi.sendNotification(message).then( (res) => {
+//         console.log(res)
+//     })
+//   }
 
   const registerForPushNotificationsAsync = async () => {
     let token;
@@ -64,31 +107,9 @@ const HomeScreen = ({ navigation, route }) => {
         finalStatus = status;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
     } else {
       alert('Must use physical device for Push Notifications');
     }
-  
-    const notiTokenis = {
-        userid: userData._id,
-        notiToken: token
-    };
-
-
-    if(token && userData.notiToken == ''){
-        try{
-            CallApi.addNotiToken(notiTokenis).then( (res) => {
-                if(res.success === true){
-                    setUserNotiToken(res.notiToken);
-                    console.log(res.success)
-                }
-            })
-        }catch( err ){
-            console.log( err );
-        }
-    }
-    
-    console.log(userNotiToken);
 
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {
@@ -107,7 +128,6 @@ const HomeScreen = ({ navigation, route }) => {
      <Background>
             <StatusBar hidden/>
             <SafeAreaView style={ styles.safeArea }>
-
             <Image source={ require('./../assets/Logo/logo.png') } style= { styles.logo } />
             <Text style={ styles.textHead }>
             <Text style={{ color: '#000000' }}>{ userData.fullname }</Text> đã sẵn sàng cùng Go To Pro thay đổi bản thân chưa, nếu rồi thì
